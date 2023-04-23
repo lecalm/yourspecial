@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Snow Effect</title>
+    <style>
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="snow"></canvas>
+    <script>
+      var canvas = document.getElementById("snow");
+      var ctx = canvas.getContext("2d");
+
+      // 设置canvas大小
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // 雪花粒子对象
+      function Particle() {
+        this.x = Math.random() * canvas.width; // 随机位置x
+        this.y = Math.random() * canvas.height; // 随机位置y
+        this.vx = Math.random() * 3 - 1.5; // 随机速度x
+        this.vy = Math.random() * 3 + 1; // 随机速度y
+        this.radius = Math.random() * 3; // 随机大小
+      }
+
+      // 更新粒子位置
+      Particle.prototype.update = function() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < -50) this.x = canvas.width + 50;
+        if (this.y > canvas.height + 50) this.y = -50;
+      }
+
+      // 绘制雪花
+      Particle.prototype.draw = function() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+      }
+
+      var particles = [];
+
+      // 生成100个雪花粒子
+      for (var i = 0; i < 100; i++) {
+        particles.push(new Particle());
+      }
+
+      // 每帧更新并绘制所有雪花粒子
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
+    </script>
+  </body>
+</html>
